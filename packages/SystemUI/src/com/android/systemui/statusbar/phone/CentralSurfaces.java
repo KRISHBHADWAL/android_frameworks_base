@@ -45,9 +45,8 @@ import com.android.systemui.plugins.ActivityStarter.OnDismissAction;
 import com.android.systemui.qs.QSPanelController;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.systemui.statusbar.NotificationPresenter;
-import com.android.systemui.statusbar.notification.row.ExpandableNotificationRow;
+import com.android.systemui.statusbar.notification.row.NotificationGutsManager;
 import com.android.systemui.statusbar.policy.GameSpaceManager;
-import com.android.systemui.util.Compile;
 
 import java.io.PrintWriter;
 
@@ -377,6 +376,8 @@ public interface CentralSurfaces extends Dumpable, LifecycleOwner {
     float getDisplayDensity();
 
     void extendDozePulse();
+
+    GameSpaceManager getGameSpaceManager();
 
     public static class KeyboardShortcutsMessage {
         final int mDeviceId;

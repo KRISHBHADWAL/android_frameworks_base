@@ -3452,6 +3452,11 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
     }
 
     @Override
+    public NotificationGutsManager getGutsManager() {
+        return mGutsManager;
+    }
+
+    @Override
     public GameSpaceManager getGameSpaceManager() {
         return mGameSpaceManager;
     }
