@@ -238,5 +238,8 @@
          demo device provisioning permissions. -->
     <string-array name="demo_device_provisioning_known_signers">
         <item>@string/config_retailDemoPackageSignature</item>
+
+   <!-- Mock Oplus LinearmotorVibratorService -->
+    <bool name="config_mockOplusLinearmotorVibratorService">false</bool>
     </string-array>
 </resources>
