@@ -2291,8 +2291,7 @@ public final class CameraManager {
                 /* Force to expose only two cameras
                  * if the package name does not falls in this bucket
                  */
-                boolean exposeAuxCamera = Camera.shouldExposeAuxCamera();
-                if (exposeAuxCamera == false && (Integer.parseInt(cameraId) >= 2)) {
+                if (!shouldExposeAuxCamera() && (Integer.parseInt(cameraId) >= 2)) {
                     throw new IllegalArgumentException("invalid cameraId");
                 }
 
@@ -2723,10 +2722,11 @@ public final class CameraManager {
             /* Force to ignore the aux or composite camera torch status update
              * if the package name does not falls in this bucket
              */
-            boolean exposeAuxCamera = Camera.shouldExposeAuxCamera();
-            if (exposeAuxCamera == false && Integer.parseInt(id) >= 2) {
-                Log.w(TAG, "ignore the torch status update of camera: " + id);
-                return;
+            if (!shouldExposeAuxCamera()) {
+                if (Integer.parseInt(id) >= 2) {
+                    Log.w(TAG, "ignore the torch status update of camera: " + id);
+                    return;
+                }
             }
 
 
