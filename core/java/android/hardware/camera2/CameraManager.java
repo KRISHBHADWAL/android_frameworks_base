@@ -2005,10 +2005,11 @@ public final class CameraManager {
         }
 
         private String[] extractCameraIdListLocked() {
-            boolean exposeAuxCamera = Camera.shouldExposeAuxCamera();
-            int size = exposeAuxCamera ? mDeviceStatus.size() : 2;
-            List<String> cameraIdList = new ArrayList<>();
-            for (int i = 0; i < size; i++) {
+            String[] cameraIds = null;
+            boolean exposeAuxCamera = shouldExposeAuxCamera();
+            int idCount = 0;
+            for (int i = 0; i < mDeviceStatus.size(); i++) {
+                if(!exposeAuxCamera && (i == 2)) break;
                 int status = mDeviceStatus.valueAt(i);
                 if (status == ICameraServiceListener.STATUS_NOT_PRESENT
                         || status == ICameraServiceListener.STATUS_ENUMERATING) {
@@ -2017,8 +2018,15 @@ public final class CameraManager {
                 String cameraId = mDeviceStatus.keyAt(i);
                 cameraIdList.add(cameraId);
             }
-            if (cameraIdList.isEmpty()) {
-                return null;
+            cameraIds = new String[idCount];
+            idCount = 0;
+            for (int i = 0; i < mDeviceStatus.size(); i++) {
+                if(!exposeAuxCamera && (i == 2)) break;
+                int status = mDeviceStatus.valueAt(i);
+                if (status == ICameraServiceListener.STATUS_NOT_PRESENT
+                        || status == ICameraServiceListener.STATUS_ENUMERATING) continue;
+                cameraIds[idCount] = mDeviceStatus.keyAt(i);
+                idCount++;
             }
             String[] cameraIds = cameraIdList.toArray(new String[0]);
             return cameraIds;
