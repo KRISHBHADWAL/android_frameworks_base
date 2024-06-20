@@ -1378,10 +1378,6 @@ public abstract class CameraDevice implements AutoCloseable {
     @Override
     public abstract void close();
 
-    /** @hide */
-    public abstract void setVendorStreamConfigMode(int index)
-            throws CameraAccessException;
-
     /**
      * Checks whether a particular {@link SessionConfiguration} is supported by the camera device.
      *
