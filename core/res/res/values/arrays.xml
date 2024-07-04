@@ -238,4 +238,5 @@
          demo device provisioning permissions. -->
     <string-array name="demo_device_provisioning_known_signers">
         <item>@string/config_retailDemoPackageSignature</item>
+    </string-array>
 </resources>
