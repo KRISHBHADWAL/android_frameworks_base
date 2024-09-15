@@ -16,8 +16,6 @@
 
 package com.android.systemui.qs;
 
-import static com.android.systemui.util.qs.QSStyleUtils.isRoundQS;
-
 import android.annotation.NonNull;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -47,13 +45,6 @@ public class QuickQSPanel extends QSPanel implements TunerService.Tunable {
     public static final int TUNER_MAX_TILES_FALLBACK = 6;
 
     private QSLogger mQsLogger;
-
-    // Tile Columns on normal conditions
-    public int mMaxColumnsPortrait = 5;
-    public int mMaxColumnsLandscape = 6;
-    // Tile Columns when media player is visible
-    public int mMaxColumnsMediaPlayer = 4;
-
     private boolean mDisabledByPolicy;
     private int mMaxTiles;
 
@@ -79,6 +70,54 @@ public class QuickQSPanel extends QSPanel implements TunerService.Tunable {
         mHorizontalContentContainer.setClipToPadding(false);
         mHorizontalContentContainer.setClipChildren(false);
         updateColumns();
+    }
+
+
+    @Override
+    public void setBrightnessView(@NonNull View view) {
+        if (mBrightnessView != null) {
+            removeView(mBrightnessView);
+        }
+        mBrightnessView = view;
+        setBrightnessViewMargin(mTop);
+        if (mBrightnessView != null) {
+            addView(mBrightnessView);
+
+            TunerService tunerService = Dependency.get(TunerService.class);
+            if (tunerService.getValue(QS_SHOW_BRIGHTNESS_SLIDER, 2) > 1) {
+                mBrightnessView.setVisibility(VISIBLE);
+            }
+        }
+    }
+
+    View getBrightnessView() {
+        return mBrightnessView;
+    }
+
+    private void setBrightnessViewMargin(boolean top) {
+        if (mBrightnessView != null) {
+            MarginLayoutParams lp = (MarginLayoutParams) mBrightnessView.getLayoutParams();
+            if (top) {
+                lp.topMargin = mContext.getResources()
+                        .getDimensionPixelSize(R.dimen.qqs_top_brightness_margin_top);
+                lp.bottomMargin = mContext.getResources()
+                        .getDimensionPixelSize(R.dimen.qqs_top_brightness_margin_bottom);
+            } else {
+                lp.topMargin = mContext.getResources()
+                        .getDimensionPixelSize(R.dimen.qqs_bottom_brightness_margin_top);
+                lp.bottomMargin = 0;
+            }
+            mBrightnessView.setLayoutParams(lp);
+        }
+    }
+
+    @Override
+    void initialize(QSLogger qsLogger) {
+        mQsLogger = qsLogger;
+        super.initialize(mQsLogger);
+        if (mHorizontalContentContainer != null) {
+            mHorizontalContentContainer.setClipChildren(false);
+        }
     }
 
 

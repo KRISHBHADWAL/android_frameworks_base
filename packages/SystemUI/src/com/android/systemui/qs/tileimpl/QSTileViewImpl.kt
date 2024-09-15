@@ -101,10 +101,8 @@ open class QSTileViewImpl @JvmOverloads constructor(
         }
 
     private val colorActive = Utils.getColorAttrDefaultColor(context, R.attr.shadeActive)
-    private val colorOffstate = Utils.getColorAttrDefaultColor(context, R.attr.shadeInactive)
-    private val colorInactive = if (isRoundQS()) Utils.applyAlpha(INACTIVE_ALPHA, colorOffstate)
-            else colorOffstate
-    private val colorUnavailable = Utils.getColorAttrDefaultColor(context, R.attr.shadeDisabled)
+    private val colorInactive = Utils.getColorAttrDefaultColor(context, R.attr.shadeInactive)
+    private val colorUnavailable = Utils.applyAlpha(UNAVAILABLE_ALPHA, colorInactive)
 
     private val colorLabelActive = Utils.getColorAttrDefaultColor(context,
             if (isRoundQS()) R.attr.onShadeInactive
@@ -139,7 +137,7 @@ open class QSTileViewImpl @JvmOverloads constructor(
     protected var showRippleEffect = true
 
     private lateinit var ripple: RippleDrawable
-    private lateinit var colorBackgroundDrawable: Drawable
+    protected lateinit var colorBackgroundDrawable: Drawable
     private var paintColor: Int = 0
     private var radiusActive: Float = 0f
     private var radiusInactive: Float = 0f
@@ -696,7 +694,7 @@ open class QSTileViewImpl @JvmOverloads constructor(
         setChevronColor(chevronColor)
     }
 
-    private fun setColor(color: Int) {
+    protected fun setColor(color: Int) {
         colorBackgroundDrawable.mutate().setTint(color)
         paintColor = color
     }
@@ -769,7 +767,7 @@ open class QSTileViewImpl @JvmOverloads constructor(
         return locInScreen.get(1) >= -height
     }
 
-    private fun getBackgroundColorForState(state: Int, disabledByPolicy: Boolean = false): Int {
+    protected open fun getBackgroundColorForState(state: Int, disabledByPolicy: Boolean = false): Int {
         return when {
             state == Tile.STATE_UNAVAILABLE || disabledByPolicy -> colorUnavailable
             state == Tile.STATE_ACTIVE -> colorActive

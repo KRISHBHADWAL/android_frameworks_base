@@ -2,6 +2,7 @@
  * Copyright (C) 2022 Paranoid Android
  *           (C) 2023 ArrowOS
  *           (C) 2023 The LibreMobileOS Foundation
+ *           (C) 2024 SomethingOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,6 +59,8 @@ public class PropImitationHooks {
     private static final String PROP_SECURITY_PATCH = "persist.sys.pihooks.security_patch";
     private static final String PROP_FIRST_API_LEVEL = "persist.sys.pihooks.first_api_level";
 
+    private static final String SPOOF_GMS = "persist.sys.somethingos.gms.enabled";
+
     private static final ComponentName GMS_ADD_ACCOUNT_ACTIVITY = ComponentName.unflattenFromString(
             "com.google.android.gms/.auth.uiflows.minutemaid.MinuteMaidActivity");
 
@@ -79,11 +82,167 @@ public class PropImitationHooks {
         "PIXEL_2016_PRELOAD"
     );
 
-    private static volatile String[] sCertifiedProps;
     private static volatile String sStockFp, sNetflixModel;
 
     private static volatile String sProcessName;
-    private static volatile boolean sIsPixelDevice, sIsGms, sIsFinsky, sIsPhotos;
+    private static volatile boolean sIsPixelDevice, sIsGms, sIsFinsky, sIsPhotos, sShouldApplyGMS;
+
+    // Pixels
+    private static final Map<String, String> propsToChangePixel9Pro;
+    private static final Map<String, String> propsToChangePixelXL;
+
+    // Games
+    private static final Map<String, String> propsToChangeROG6;
+    private static final Map<String, String> propsToChangeXP5;
+    private static final Map<String, String> propsToChangeOP8P;
+    private static final Map<String, String> propsToChangeOP9P;
+    private static final Map<String, String> propsToChangeMI11TP;
+    private static final Map<String, String> propsToChangeMI13P;
+    private static final Map<String, String> propsToChangeF5;
+    private static final Map<String, String> propsToChangeBS4;
+
+    private static final String[] certifiedProps = {
+        "MANUFACTURER",
+        "BRAND",
+        "DEVICE",
+        "MODEL",
+        "PRODUCT",
+        "FINGERPRINT",
+        "SECURITY_PATCH",
+        "FIRST_API_LEVEL"
+    };
+
+    // Packages to Spoof as ROG Phone 6
+    private static final String[] packagesToChangeROG6 = {
+            "com.activision.callofduty.shooter",
+            "com.ea.gp.fifamobile",
+            "com.gameloft.android.ANMP.GloftA9HM",
+            "com.madfingergames.legends",
+            "com.pearlabyss.blackdesertm",
+            "com.pearlabyss.blackdesertm.gl"
+    };
+
+    // Packages to Spoof as Xperia 5
+    private static final String[] packagesToChangeXP5 = {
+            "com.garena.game.codm",
+            "com.tencent.tmgp.kr.codm",
+            "com.vng.codmvn"
+    };
+
+    // Packages to Spoof as OnePlus 8 Pro
+    private static final String[] packagesToChangeOP8P = {
+            "com.netease.lztgglobal",
+            "com.pubg.imobile",
+            "com.pubg.krmobile",
+            "com.rekoo.pubgm",
+            "com.riotgames.league.wildrift",
+            "com.riotgames.league.wildrifttw",
+            "com.riotgames.league.wildriftvn",
+            "com.riotgames.league.teamfighttactics",
+            "com.riotgames.league.teamfighttacticstw",
+            "com.riotgames.league.teamfighttacticsvn",
+            "com.tencent.ig",
+            "com.tencent.tmgp.pubgmhd",
+            "com.vng.pubgmobile"
+    };
+
+    // Packages to Spoof as OnePlus 9 Pro
+    private static final String[] packagesToChangeOP9P = {
+            "com.epicgames.fortnite",
+            "com.epicgames.portal",
+            "com.tencent.lolm"
+    };
+
+    // Packages to Spoof as Mi 11T Pro
+    private static final String[] packagesToChangeMI11TP = {
+            "com.ea.gp.apexlegendsmobilefps",
+            "com.levelinfinite.hotta.gp",
+            "com.supercell.clashofclans",
+            "com.vng.mlbbvn"
+    };
+
+    // Packages to Spoof as Xiaomi 13 Pro
+    private static final String[] packagesToChangeMI13P = {
+            "com.levelinfinite.sgameGlobal",
+            "com.tencent.tmgp.sgame"
+    };
+
+    // Packages to Spoof as POCO F5
+    private static final String[] packagesToChangeF5 = {
+            "com.dts.freefiremax",
+            "com.dts.freefireth",
+            "com.mobile.legends"
+    };
+
+    // Packages to Spoof as Black Shark 4
+    private static final String[] packagesToChangeBS4 = {
+            "com.proximabeta.mf.uamo"
+    };
+
+
+    private static final String[] packagesToChangePixel9Pro = {
+            "com.android.vending",
+            "com.google.android.apps.customization.pixel",
+            "com.google.android.apps.emojiwallpaper",
+            "com.google.android.apps.privacy.wildlife",
+            "com.google.android.apps.subscriptions.red",
+            "com.google.android.apps.wallpaper",
+            "com.google.android.apps.wallpaper.pixel",
+            "com.google.android.googlequicksearchbox",
+            "com.google.android.wallpaper.effects",
+            "com.google.android.apps.bard",
+            "com.google.pixel.livewallpaper",
+            "com.nhs.online.nhsonline",
+            "com.netflix.mediaclient"
+    };
+
+    static {
+        propsToChangePixel9Pro = new HashMap<>();
+        propsToChangePixel9Pro.put("BRAND", "google");
+        propsToChangePixel9Pro.put("MANUFACTURER", "Google");
+        propsToChangePixel9Pro.put("DEVICE", "caiman");
+        propsToChangePixel9Pro.put("PRODUCT", "caiman");
+        propsToChangePixel9Pro.put("HARDWARE", "caiman");
+        propsToChangePixel9Pro.put("MODEL", "Pixel 9 Pro");
+        propsToChangePixel9Pro.put("ID", "AD1A.240530.047.U1");
+        propsToChangePixel9Pro.put("FINGERPRINT", "google/caiman/caiman:14/AD1A.240530.047.U1/12150698:user/release-keys");
+        propsToChangePixelXL = new HashMap<>();
+        propsToChangePixelXL.put("BRAND", "google");
+        propsToChangePixelXL.put("MANUFACTURER", "Google");
+        propsToChangePixelXL.put("DEVICE", "marlin");
+        propsToChangePixelXL.put("PRODUCT", "marlin");
+        propsToChangePixelXL.put("HARDWARE", "marlin");
+        propsToChangePixelXL.put("MODEL", "Pixel XL");
+        propsToChangePixelXL.put("ID", "QP1A.191005.007.A3");
+        propsToChangePixelXL.put("FINGERPRINT", "google/marlin/marlin:10/QP1A.191005.007.A3/5972272:user/release-keys");
+        propsToChangeROG6 = new HashMap<>();
+        propsToChangeROG6.put("BRAND", "asus");
+        propsToChangeROG6.put("MANUFACTURER", "asus");
+        propsToChangeROG6.put("DEVICE", "AI2201");
+        propsToChangeROG6.put("MODEL", "ASUS_AI2201");
+        propsToChangeXP5 = new HashMap<>();
+        propsToChangeXP5.put("MODEL", "SO-52A");
+        propsToChangeXP5.put("MANUFACTURER", "Sony");
+        propsToChangeOP8P = new HashMap<>();
+        propsToChangeOP8P.put("MODEL", "IN2020");
+        propsToChangeOP8P.put("MANUFACTURER", "OnePlus");
+        propsToChangeOP9P = new HashMap<>();
+        propsToChangeOP9P.put("MODEL", "LE2123");
+        propsToChangeOP9P.put("MANUFACTURER", "OnePlus");
+        propsToChangeMI11TP = new HashMap<>();
+        propsToChangeMI11TP.put("MODEL", "2107113SI");
+        propsToChangeMI11TP.put("MANUFACTURER", "Xiaomi");
+        propsToChangeMI13P = new HashMap<>();
+        propsToChangeMI13P.put("BRAND", "Xiaomi");
+        propsToChangeMI13P.put("MANUFACTURER", "Xiaomi");
+        propsToChangeMI13P.put("MODEL", "2210132C");
+        propsToChangeF5 = new HashMap<>();
+        propsToChangeF5.put("MODEL", "23049PCD8G");
+        propsToChangeF5.put("MANUFACTURER", "Xiaomi");
+        propsToChangeBS4 = new HashMap<>();
+        propsToChangeBS4.put("MODEL", "2SM-X706B");
+        propsToChangeBS4.put("MANUFACTURER", "blackshark");
+    }
 
     // Pixels
     private static final Map<String, String> propsToChangePixel8Pro;
@@ -246,7 +405,6 @@ public class PropImitationHooks {
             return;
         }
 
-        sCertifiedProps = res.getStringArray(R.array.config_certifiedBuildProperties);
         sStockFp = res.getString(R.string.config_stockFingerprint);
         sNetflixModel = res.getString(R.string.config_netflixSpoofModel);
 
@@ -255,12 +413,13 @@ public class PropImitationHooks {
         sIsGms = packageName.equals(PACKAGE_GMS) && processName.equals(PROCESS_GMS_UNSTABLE);
         sIsFinsky = packageName.equals(PACKAGE_FINSKY);
         sIsPhotos = packageName.equals(PACKAGE_GPHOTOS);
+        sShouldApplyGMS = SystemProperties.getBoolean(SPOOF_GMS, true);
 
         /* Set Certified Properties for GMSCore
          * Set Stock Fingerprint for ARCore
          */
 
-        if (sIsGms) {
+        if (sIsGms && sShouldApplyGMS) {
             setCertifiedPropsForGms();
         } else if (!sStockFp.isEmpty() && packageName.equals(PACKAGE_ARCORE)) {
             dlog("Setting stock fingerprint for: " + packageName);
@@ -275,8 +434,8 @@ public class PropImitationHooks {
                 String value = prop.getValue();
                 setPropValue(key, value);
             }
-        } else if (Arrays.asList(packagesToChangePixel8Pro).contains(packageName) && SystemProperties.getBoolean(spoofGApps, false)) {
-            for (Map.Entry<String, String> prop : propsToChangePixel8Pro.entrySet()) {
+        } else if (Arrays.asList(packagesToChangePixel9Pro).contains(packageName) && SystemProperties.getBoolean(spoofGApps, false)) {
+            for (Map.Entry<String, String> prop : propsToChangePixel9Pro.entrySet()) {
                 String key = prop.getKey();
                 String value = prop.getValue();
                 setPropValue(key, value);
@@ -367,10 +526,6 @@ public class PropImitationHooks {
     }
 
     private static void setCertifiedPropsForGms() {
-        if (sCertifiedProps.length == 0) {
-            dlog("Certified props are not set");
-            return;
-        }
         final boolean was = isGmsAddAccountActivityOnTop();
         final TaskStackListener taskStackListener = new TaskStackListener() {
             @Override
@@ -397,11 +552,9 @@ public class PropImitationHooks {
     }
 
     private static void setCertifiedProps() {
-        String allKeys = SystemProperties.get("persist.sys.somethingos.gms.list");
-        if (allKeys != null && !allKeys.isEmpty()) {
-            String[] keys = allKeys.split("\\+");
-            for (String key : keys) {
-                String value = SystemProperties.get("persist.sys.somethingos.gms." + key);
+        for (String key : certifiedProps) {
+            String value = SystemProperties.get("persist.sys.somethingos.gms." + key);
+            if (value != null && !value.isEmpty()) {
                 if (key.equals("SECURITY_PATCH")) {
                     setSystemProperty(PROP_SECURITY_PATCH, value);
                 } else if (key.equals("FIRST_API_LEVEL")) {
@@ -410,19 +563,6 @@ public class PropImitationHooks {
                     setPropValue(key, value);
                 }
             }
-        } else {
-            for (String entry : sCertifiedProps) {
-                // Each entry must be of the format FIELD:value
-                final String[] fieldAndProp = entry.split(":", 2);
-                if (fieldAndProp.length != 2) {
-                    Log.e(TAG, "Invalid entry in certified props: " + entry);
-                    continue;
-                }
-                setPropValue(fieldAndProp[0], fieldAndProp[1]);
-            }
-            setSystemProperty(PROP_SECURITY_PATCH, Build.VERSION.SECURITY_PATCH);
-            setSystemProperty(PROP_FIRST_API_LEVEL,
-                    Integer.toString(Build.VERSION.DEVICE_INITIAL_SDK_INT));
         }
     }
 
@@ -468,7 +608,7 @@ public class PropImitationHooks {
 
     public static void onEngineGetCertificateChain() {
         // Check stack for SafetyNet or Play Integrity
-        if (isCallerSafetyNet() || sIsFinsky) {
+        if ((isCallerSafetyNet() || sIsFinsky) && sShouldApplyGMS) {
             dlog("Blocked key attestation sIsGms=" + sIsGms + " sIsFinsky=" + sIsFinsky);
             throw new UnsupportedOperationException();
         }

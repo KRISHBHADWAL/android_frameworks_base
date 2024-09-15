@@ -947,8 +947,8 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
             if (mClipsQsScrim) {
                 mNotificationsAlpha = behindAlpha;
                 mNotificationsTint = behindTint;
-                mBehindAlpha = QS_CLIP_SCRIM_ALPHA;
-                mBehindTint = Color.BLACK;
+                mBehindAlpha = 1;
+                mBehindTint = Color.TRANSPARENT;
             } else {
                 mBehindAlpha = behindAlpha;
                 if (mState == ScrimState.KEYGUARD && mTransitionToFullShadeProgress > 0.0f) {
@@ -1501,7 +1501,7 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
         int background = Utils.getColorAttr(mScrimBehind.getContext(),
                 android.R.attr.colorBackgroundFloating).getDefaultColor();
         int surfaceBackground = Utils.getColorAttr(mScrimBehind.getContext(),
-		com.android.internal.R.attr.colorSurfaceHeader).getDefaultColor();
+                com.android.internal.R.attr.colorSurfaceHeader).getDefaultColor();
         int accent = Utils.getColorAccent(mScrimBehind.getContext()).getDefaultColor();
 
         mColors.setMainColor(background);

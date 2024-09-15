@@ -136,7 +136,7 @@
     <java-symbol type="string" name="config_lightFontFamily" />
     <java-symbol type="string" name="config_regularFontFamily" />
 
+    <!-- Leds -->
+    <java-symbol type="bool" name="config_intrusiveBatteryLed" />
 
-    <!-- Mock Oplus LinearmotorVibratorService -->
-    <java-symbol type="bool" name="config_mockOplusLinearmotorVibratorService" />
 </resources>

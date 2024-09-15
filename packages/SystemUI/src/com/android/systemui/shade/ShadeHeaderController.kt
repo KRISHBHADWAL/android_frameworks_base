@@ -294,7 +294,6 @@ constructor(
                 date.setTextAppearance(R.style.TextAppearance_QS_Status)
                 mShadeCarrierGroup.updateTextAppearance(R.style.TextAppearance_QS_Status_Carriers)
             }
-            
             override fun onUiModeChanged() {
                 updateResources()
             }
@@ -349,6 +348,7 @@ constructor(
         systemIcons.setOnHoverListener(
             statusOverlayHoverListenerFactory.createListener(systemIcons)
         )
+        updateResources()
     }
 
     override fun onViewDetached() {

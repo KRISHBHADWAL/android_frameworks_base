@@ -6094,20 +6094,6 @@ public final class Settings {
         public static final String BACK_GESTURE_HEIGHT = "back_gesture_height";
 
         /**
-         * GameSpace: List of added games by user
-         * @hide
-         */
-        @Readable
-        public static final String GAMESPACE_GAME_LIST = "gamespace_game_list";
-
-        /**
-         * GameSpace: Whether fullscreen intent will be suppressed while in game session
-         * @hide
-         */
-        @Readable
-        public static final String GAMESPACE_SUPPRESS_FULLSCREEN_INTENT = "gamespace_suppress_fullscreen_intent";
-
-        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
@@ -11927,12 +11913,6 @@ public final class Settings {
          */
         @Readable
         public static final String HIDE_DEVELOPER_STATUS = "hide_developer_status";
-        
-        /**
-         * Whether to include options in power menu for rebooting into recovery or bootloader
-         * @hide
-         */
-        public static final String ADVANCED_REBOOT = "advanced_reboot";
 
         /**
          * Keys we no longer back up under the current schema, but want to continue to
@@ -12179,43 +12159,6 @@ public final class Settings {
          * @hide
          */
         public static final String QS_BRIGHTNESS_SLIDER_POSITION = "qs_brightness_slider_position";
-
-        /**
-         * Quicksettings tile shape
-         * @hide
-         */
-        public static final String QS_TILE_SHAPE = "qs_tile_shape";
-
-
-        /**
-         * Quicksettings UI Style
-         * @hide
-         */
-        public static final String QS_STYLE_ROUND = "qs_style_round";
-        
-        /**
-         * Quicksettings columns
-         * @hide
-         */
-        public static final String QS_NUM_COLUMNS = "qs_num_columns";
-
-        /**
-         * Quicksettings columns landscape
-         * @hide
-         */
-        public static final String QS_NUM_COLUMNS_LANDSCAPE = "qs_num_columns_landscape";
-
-        /**
-         * Quick QS columns
-         * @hide
-         */
-        public static final String QQS_NUM_COLUMNS = "qqs_num_columns";
-
-        /**
-         * Quick QS columns landscape
-         * @hide
-         */
-        public static final String QQS_NUM_COLUMNS_LANDSCAPE = "qqs_num_columns_landscape";
 
         /**
          * These entries are considered common between the personal and the managed profile,
@@ -17317,6 +17260,12 @@ public final class Settings {
         @Readable
         public static final String POWER_BUTTON_VERY_LONG_PRESS =
                 "power_button_very_long_press";
+
+        /**
+        * Whether to allow battery light
+        * @hide
+        */
+        public static final String BATTERY_LIGHT_ENABLED = "battery_light_enabled";
 
         /**
          * Overrides internal R.integer.config_keyChordPowerVolumeUp.
