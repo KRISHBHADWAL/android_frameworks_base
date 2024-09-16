@@ -72,7 +72,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -2006,29 +2005,24 @@ public final class CameraManager {
 
         private String[] extractCameraIdListLocked() {
             String[] cameraIds = null;
-            boolean exposeAuxCamera = shouldExposeAuxCamera();
+            boolean exposeAuxCamera = Camera.shouldExposeAuxCamera();
+            int size = exposeAuxCamera ? mDeviceStatus.size() : 2;
             int idCount = 0;
-            for (int i = 0; i < mDeviceStatus.size(); i++) {
-                if(!exposeAuxCamera && (i == 2)) break;
+            for (int i = 0; i < size; i++) {
                 int status = mDeviceStatus.valueAt(i);
                 if (status == ICameraServiceListener.STATUS_NOT_PRESENT
-                        || status == ICameraServiceListener.STATUS_ENUMERATING) {
-                    continue;
-                }
-                String cameraId = mDeviceStatus.keyAt(i);
-                cameraIdList.add(cameraId);
+                        || status == ICameraServiceListener.STATUS_ENUMERATING) continue;
+                idCount++;
             }
             cameraIds = new String[idCount];
             idCount = 0;
-            for (int i = 0; i < mDeviceStatus.size(); i++) {
-                if(!exposeAuxCamera && (i == 2)) break;
+            for (int i = 0; i < size; i++) {
                 int status = mDeviceStatus.valueAt(i);
                 if (status == ICameraServiceListener.STATUS_NOT_PRESENT
                         || status == ICameraServiceListener.STATUS_ENUMERATING) continue;
                 cameraIds[idCount] = mDeviceStatus.keyAt(i);
                 idCount++;
             }
-            String[] cameraIds = cameraIdList.toArray(new String[0]);
             return cameraIds;
         }
 
