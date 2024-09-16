@@ -2004,24 +2004,17 @@ public final class CameraManager {
         }
 
         private String[] extractCameraIdListLocked() {
-            String[] cameraIds = null;
             boolean exposeAuxCamera = Camera.shouldExposeAuxCamera();
             int size = exposeAuxCamera ? mDeviceStatus.size() : 2;
-            int idCount = 0;
+            List<String> cameraIdList = new ArrayList<>();
             for (int i = 0; i < size; i++) {
                 int status = mDeviceStatus.valueAt(i);
                 if (status == ICameraServiceListener.STATUS_NOT_PRESENT
                         || status == ICameraServiceListener.STATUS_ENUMERATING) continue;
                 idCount++;
             }
-            cameraIds = new String[idCount];
-            idCount = 0;
-            for (int i = 0; i < size; i++) {
-                int status = mDeviceStatus.valueAt(i);
-                if (status == ICameraServiceListener.STATUS_NOT_PRESENT
-                        || status == ICameraServiceListener.STATUS_ENUMERATING) continue;
-                cameraIds[idCount] = mDeviceStatus.keyAt(i);
-                idCount++;
+            if (cameraIdList.isEmpty()) {
+                return null;
             }
             return cameraIds;
         }
