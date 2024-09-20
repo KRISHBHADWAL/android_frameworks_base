@@ -572,4 +572,6 @@
          color is set by the framework or not. -->
     <color name="navigation_bar_default">#00808080</color>
 
+    <!-- Mock Oplus LinearmotorVibratorService -->
+    <java-symbol type="bool" name="config_mockOplusLinearmotorVibratorService" />
 </resources>

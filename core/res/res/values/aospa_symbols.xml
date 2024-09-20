@@ -139,7 +139,4 @@
     <!-- Leds -->
     <java-symbol type="bool" name="config_intrusiveBatteryLed" />
 
-
-    <!-- Mock Oplus LinearmotorVibratorService -->
-    <java-symbol type="bool" name="config_mockOplusLinearmotorVibratorService" />
 </resources>
